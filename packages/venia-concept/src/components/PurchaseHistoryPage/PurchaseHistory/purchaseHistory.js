@@ -29,31 +29,39 @@ class PurchaseHistory extends Component {
         resetPurchaseHistory();
     }
 
-    render() {
+    get purchaseHistoryList() {
         const { classes, items, isFetching } = this.props;
+
+        if (isFetching) {
+            return 'Loading...';
+        }
+
+        return (
+            <List
+                items={items}
+                getItemKey={({ id }) => id}
+                render={props => (
+                    <ul className={classes.itemsContainer}>{props.children}</ul>
+                )}
+                renderItem={props => (
+                    <li>
+                        <PurchaseHistoryItem {...props} />
+                    </li>
+                )}
+            />
+        );
+    }
+
+    render() {
+        const { purchaseHistoryList } = this;
+        const { classes } = this.props;
+
         return (
             <div className={classes.body}>
                 <div className={classes.filterContainer}>
                     <Filter />
                 </div>
-                {isFetching ? (
-                    'Loading...'
-                ) : (
-                    <List
-                        items={items}
-                        getItemKey={({ id }) => id}
-                        render={props => (
-                            <ul className={classes.itemsContainer}>
-                                {props.children}
-                            </ul>
-                        )}
-                        renderItem={props => (
-                            <li>
-                                <PurchaseHistoryItem {...props} />
-                            </li>
-                        )}
-                    />
-                )}
+                {purchaseHistoryList}
             </div>
         );
     }
